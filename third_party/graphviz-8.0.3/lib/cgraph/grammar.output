@@ -1,0 +1,940 @@
+Terminals unused in grammar
+
+    T_list
+    T_attr
+
+
+Grammatica
+
+    0 $accept: graph $end
+
+    1 graph: hdr body
+    2      | error
+    3      | ε
+
+    4 body: '{' optstmtlist '}'
+
+    5 hdr: optstrict graphtype optgraphname
+
+    6 optgraphname: atom
+    7             | ε
+
+    8 optstrict: T_strict
+    9          | ε
+
+   10 graphtype: T_graph
+   11          | T_digraph
+
+   12 optstmtlist: stmtlist
+   13            | ε
+
+   14 stmtlist: stmtlist stmt
+   15         | stmt
+
+   16 optsemi: ';'
+   17        | ε
+
+   18 stmt: attrstmt optsemi
+   19     | compound optsemi
+
+   20 compound: simple rcompound optattr
+
+   21 simple: nodelist
+   22       | subgraph
+
+   23 $@1: ε
+
+   24 $@2: ε
+
+   25 rcompound: T_edgeop $@1 simple $@2 rcompound
+   26          | ε
+
+   27 nodelist: node
+   28         | nodelist ',' node
+
+   29 node: atom
+   30     | atom ':' atom
+   31     | atom ':' atom ':' atom
+
+   32 attrstmt: attrtype optmacroname attrlist
+   33         | graphattrdefs
+
+   34 attrtype: T_graph
+   35         | T_node
+   36         | T_edge
+
+   37 optmacroname: atom '='
+   38             | ε
+
+   39 optattr: attrlist
+   40        | ε
+
+   41 attrlist: optattr '[' optattrdefs ']'
+
+   42 optattrdefs: optattrdefs attrdefs
+   43            | ε
+
+   44 attrdefs: attrassignment optseparator
+
+   45 attrassignment: atom '=' atom
+
+   46 graphattrdefs: attrassignment
+
+   47 $@3: ε
+
+   48 subgraph: optsubghdr $@3 body
+
+   49 optsubghdr: T_subgraph atom
+   50           | T_subgraph
+   51           | ε
+
+   52 optseparator: ';'
+   53             | ','
+   54             | ε
+
+   55 atom: T_atom
+   56     | qatom
+
+   57 qatom: T_qatom
+   58      | qatom '+' T_qatom
+
+
+Simboli terminali e regole in cui appaiono
+
+    $end (0) 0
+    '+' (43) 58
+    ',' (44) 28 53
+    ':' (58) 30 31
+    ';' (59) 16 52
+    '=' (61) 37 45
+    '[' (91) 41
+    ']' (93) 41
+    '{' (123) 4
+    '}' (125) 4
+    error (256) 2
+    T_graph <i> (258) 10 34
+    T_node <i> (259) 35
+    T_edge <i> (260) 36
+    T_digraph <i> (261) 11
+    T_subgraph <i> (262) 49 50
+    T_strict <i> (263) 8
+    T_edgeop <i> (264) 25
+    T_list (265)
+    T_attr (266)
+    T_atom <str> (267) 55
+    T_qatom <str> (268) 57 58
+
+
+Simboli nonterminali e regole in cui appaiono
+
+    $accept (23)
+        on left: 0
+    graph (24)
+        on left: 1 2 3
+        on right: 0
+    body (25)
+        on left: 4
+        on right: 1 48
+    hdr (26)
+        on left: 5
+        on right: 1
+    optgraphname <str> (27)
+        on left: 6 7
+        on right: 5
+    optstrict <i> (28)
+        on left: 8 9
+        on right: 5
+    graphtype <i> (29)
+        on left: 10 11
+        on right: 5
+    optstmtlist (30)
+        on left: 12 13
+        on right: 4
+    stmtlist (31)
+        on left: 14 15
+        on right: 12 14
+    optsemi (32)
+        on left: 16 17
+        on right: 18 19
+    stmt (33)
+        on left: 18 19
+        on right: 14 15
+    compound (34)
+        on left: 20
+        on right: 19
+    simple (35)
+        on left: 21 22
+        on right: 20 25
+    rcompound <i> (36)
+        on left: 25 26
+        on right: 20 25
+    $@1 (37)
+        on left: 23
+        on right: 25
+    $@2 (38)
+        on left: 24
+        on right: 25
+    nodelist (39)
+        on left: 27 28
+        on right: 21 28
+    node (40)
+        on left: 29 30 31
+        on right: 27 28
+    attrstmt (41)
+        on left: 32 33
+        on right: 18
+    attrtype <i> (42)
+        on left: 34 35 36
+        on right: 32
+    optmacroname <str> (43)
+        on left: 37 38
+        on right: 32
+    optattr (44)
+        on left: 39 40
+        on right: 20 41
+    attrlist (45)
+        on left: 41
+        on right: 32 39
+    optattrdefs (46)
+        on left: 42 43
+        on right: 41 42
+    attrdefs (47)
+        on left: 44
+        on right: 42
+    attrassignment (48)
+        on left: 45
+        on right: 44 46
+    graphattrdefs (49)
+        on left: 46
+        on right: 33
+    subgraph (50)
+        on left: 48
+        on right: 22
+    $@3 (51)
+        on left: 47
+        on right: 48
+    optsubghdr <str> (52)
+        on left: 49 50 51
+        on right: 48
+    optseparator (53)
+        on left: 52 53 54
+        on right: 44
+    atom <str> (54)
+        on left: 55 56
+        on right: 6 29 30 31 37 45 49
+    qatom <str> (55)
+        on left: 57 58
+        on right: 56 58
+
+
+State 0
+
+    0 $accept: • graph $end
+
+    error     shift e prosecuzione allo stato 1
+    T_strict  shift e prosecuzione allo stato 2
+
+    $end       riduzione con la regola 3 (graph)
+    T_graph    riduzione con la regola 9 (optstrict)
+    T_digraph  riduzione con la regola 9 (optstrict)
+
+    graph      prosecuzione allo stato 3
+    hdr        prosecuzione allo stato 4
+    optstrict  prosecuzione allo stato 5
+
+
+State 1
+
+    2 graph: error •
+
+    $default  riduzione con la regola 2 (graph)
+
+
+State 2
+
+    8 optstrict: T_strict •
+
+    $default  riduzione con la regola 8 (optstrict)
+
+
+State 3
+
+    0 $accept: graph • $end
+
+    $end  shift e prosecuzione allo stato 6
+
+
+State 4
+
+    1 graph: hdr • body
+
+    '{'  shift e prosecuzione allo stato 7
+
+    body  prosecuzione allo stato 8
+
+
+State 5
+
+    5 hdr: optstrict • graphtype optgraphname
+
+    T_graph    shift e prosecuzione allo stato 9
+    T_digraph  shift e prosecuzione allo stato 10
+
+    graphtype  prosecuzione allo stato 11
+
+
+State 6
+
+    0 $accept: graph $end •
+
+    $default  accetta
+
+
+State 7
+
+    4 body: '{' • optstmtlist '}'
+
+    T_graph     shift e prosecuzione allo stato 12
+    T_node      shift e prosecuzione allo stato 13
+    T_edge      shift e prosecuzione allo stato 14
+    T_subgraph  shift e prosecuzione allo stato 15
+    T_atom      shift e prosecuzione allo stato 16
+    T_qatom     shift e prosecuzione allo stato 17
+
+    '{'       riduzione con la regola 51 (optsubghdr)
+    $default  riduzione con la regola 13 (optstmtlist)
+
+    optstmtlist     prosecuzione allo stato 18
+    stmtlist        prosecuzione allo stato 19
+    stmt            prosecuzione allo stato 20
+    compound        prosecuzione allo stato 21
+    simple          prosecuzione allo stato 22
+    nodelist        prosecuzione allo stato 23
+    node            prosecuzione allo stato 24
+    attrstmt        prosecuzione allo stato 25
+    attrtype        prosecuzione allo stato 26
+    attrassignment  prosecuzione allo stato 27
+    graphattrdefs   prosecuzione allo stato 28
+    subgraph        prosecuzione allo stato 29
+    optsubghdr      prosecuzione allo stato 30
+    atom            prosecuzione allo stato 31
+    qatom           prosecuzione allo stato 32
+
+
+State 8
+
+    1 graph: hdr body •
+
+    $default  riduzione con la regola 1 (graph)
+
+
+State 9
+
+   10 graphtype: T_graph •
+
+    $default  riduzione con la regola 10 (graphtype)
+
+
+State 10
+
+   11 graphtype: T_digraph •
+
+    $default  riduzione con la regola 11 (graphtype)
+
+
+State 11
+
+    5 hdr: optstrict graphtype • optgraphname
+
+    T_atom   shift e prosecuzione allo stato 16
+    T_qatom  shift e prosecuzione allo stato 17
+
+    $default  riduzione con la regola 7 (optgraphname)
+
+    optgraphname  prosecuzione allo stato 33
+    atom          prosecuzione allo stato 34
+    qatom         prosecuzione allo stato 32
+
+
+State 12
+
+   34 attrtype: T_graph •
+
+    $default  riduzione con la regola 34 (attrtype)
+
+
+State 13
+
+   35 attrtype: T_node •
+
+    $default  riduzione con la regola 35 (attrtype)
+
+
+State 14
+
+   36 attrtype: T_edge •
+
+    $default  riduzione con la regola 36 (attrtype)
+
+
+State 15
+
+   49 optsubghdr: T_subgraph • atom
+   50           | T_subgraph •
+
+    T_atom   shift e prosecuzione allo stato 16
+    T_qatom  shift e prosecuzione allo stato 17
+
+    $default  riduzione con la regola 50 (optsubghdr)
+
+    atom   prosecuzione allo stato 35
+    qatom  prosecuzione allo stato 32
+
+
+State 16
+
+   55 atom: T_atom •
+
+    $default  riduzione con la regola 55 (atom)
+
+
+State 17
+
+   57 qatom: T_qatom •
+
+    $default  riduzione con la regola 57 (qatom)
+
+
+State 18
+
+    4 body: '{' optstmtlist • '}'
+
+    '}'  shift e prosecuzione allo stato 36
+
+
+State 19
+
+   12 optstmtlist: stmtlist •
+   14 stmtlist: stmtlist • stmt
+
+    T_graph     shift e prosecuzione allo stato 12
+    T_node      shift e prosecuzione allo stato 13
+    T_edge      shift e prosecuzione allo stato 14
+    T_subgraph  shift e prosecuzione allo stato 15
+    T_atom      shift e prosecuzione allo stato 16
+    T_qatom     shift e prosecuzione allo stato 17
+
+    '{'       riduzione con la regola 51 (optsubghdr)
+    $default  riduzione con la regola 12 (optstmtlist)
+
+    stmt            prosecuzione allo stato 37
+    compound        prosecuzione allo stato 21
+    simple          prosecuzione allo stato 22
+    nodelist        prosecuzione allo stato 23
+    node            prosecuzione allo stato 24
+    attrstmt        prosecuzione allo stato 25
+    attrtype        prosecuzione allo stato 26
+    attrassignment  prosecuzione allo stato 27
+    graphattrdefs   prosecuzione allo stato 28
+    subgraph        prosecuzione allo stato 29
+    optsubghdr      prosecuzione allo stato 30
+    atom            prosecuzione allo stato 31
+    qatom           prosecuzione allo stato 32
+
+
+State 20
+
+   15 stmtlist: stmt •
+
+    $default  riduzione con la regola 15 (stmtlist)
+
+
+State 21
+
+   19 stmt: compound • optsemi
+
+    ';'  shift e prosecuzione allo stato 38
+
+    $default  riduzione con la regola 17 (optsemi)
+
+    optsemi  prosecuzione allo stato 39
+
+
+State 22
+
+   20 compound: simple • rcompound optattr
+
+    T_edgeop  shift e prosecuzione allo stato 40
+
+    $default  riduzione con la regola 26 (rcompound)
+
+    rcompound  prosecuzione allo stato 41
+
+
+State 23
+
+   21 simple: nodelist •
+   28 nodelist: nodelist • ',' node
+
+    ','  shift e prosecuzione allo stato 42
+
+    $default  riduzione con la regola 21 (simple)
+
+
+State 24
+
+   27 nodelist: node •
+
+    $default  riduzione con la regola 27 (nodelist)
+
+
+State 25
+
+   18 stmt: attrstmt • optsemi
+
+    ';'  shift e prosecuzione allo stato 38
+
+    $default  riduzione con la regola 17 (optsemi)
+
+    optsemi  prosecuzione allo stato 43
+
+
+State 26
+
+   32 attrstmt: attrtype • optmacroname attrlist
+
+    T_atom   shift e prosecuzione allo stato 16
+    T_qatom  shift e prosecuzione allo stato 17
+
+    $default  riduzione con la regola 38 (optmacroname)
+
+    optmacroname  prosecuzione allo stato 44
+    atom          prosecuzione allo stato 45
+    qatom         prosecuzione allo stato 32
+
+
+State 27
+
+   46 graphattrdefs: attrassignment •
+
+    $default  riduzione con la regola 46 (graphattrdefs)
+
+
+State 28
+
+   33 attrstmt: graphattrdefs •
+
+    $default  riduzione con la regola 33 (attrstmt)
+
+
+State 29
+
+   22 simple: subgraph •
+
+    $default  riduzione con la regola 22 (simple)
+
+
+State 30
+
+   48 subgraph: optsubghdr • $@3 body
+
+    $default  riduzione con la regola 47 ($@3)
+
+    $@3  prosecuzione allo stato 46
+
+
+State 31
+
+   29 node: atom •
+   30     | atom • ':' atom
+   31     | atom • ':' atom ':' atom
+   45 attrassignment: atom • '=' atom
+
+    ':'  shift e prosecuzione allo stato 47
+    '='  shift e prosecuzione allo stato 48
+
+    $default  riduzione con la regola 29 (node)
+
+
+State 32
+
+   56 atom: qatom •
+   58 qatom: qatom • '+' T_qatom
+
+    '+'  shift e prosecuzione allo stato 49
+
+    $default  riduzione con la regola 56 (atom)
+
+
+State 33
+
+    5 hdr: optstrict graphtype optgraphname •
+
+    $default  riduzione con la regola 5 (hdr)
+
+
+State 34
+
+    6 optgraphname: atom •
+
+    $default  riduzione con la regola 6 (optgraphname)
+
+
+State 35
+
+   49 optsubghdr: T_subgraph atom •
+
+    $default  riduzione con la regola 49 (optsubghdr)
+
+
+State 36
+
+    4 body: '{' optstmtlist '}' •
+
+    $default  riduzione con la regola 4 (body)
+
+
+State 37
+
+   14 stmtlist: stmtlist stmt •
+
+    $default  riduzione con la regola 14 (stmtlist)
+
+
+State 38
+
+   16 optsemi: ';' •
+
+    $default  riduzione con la regola 16 (optsemi)
+
+
+State 39
+
+   19 stmt: compound optsemi •
+
+    $default  riduzione con la regola 19 (stmt)
+
+
+State 40
+
+   25 rcompound: T_edgeop • $@1 simple $@2 rcompound
+
+    $default  riduzione con la regola 23 ($@1)
+
+    $@1  prosecuzione allo stato 50
+
+
+State 41
+
+   20 compound: simple rcompound • optattr
+
+    $default  riduzione con la regola 40 (optattr)
+
+    optattr   prosecuzione allo stato 51
+    attrlist  prosecuzione allo stato 52
+
+
+State 42
+
+   28 nodelist: nodelist ',' • node
+
+    T_atom   shift e prosecuzione allo stato 16
+    T_qatom  shift e prosecuzione allo stato 17
+
+    node   prosecuzione allo stato 53
+    atom   prosecuzione allo stato 54
+    qatom  prosecuzione allo stato 32
+
+
+State 43
+
+   18 stmt: attrstmt optsemi •
+
+    $default  riduzione con la regola 18 (stmt)
+
+
+State 44
+
+   32 attrstmt: attrtype optmacroname • attrlist
+
+    $default  riduzione con la regola 40 (optattr)
+
+    optattr   prosecuzione allo stato 55
+    attrlist  prosecuzione allo stato 56
+
+
+State 45
+
+   37 optmacroname: atom • '='
+
+    '='  shift e prosecuzione allo stato 57
+
+
+State 46
+
+   48 subgraph: optsubghdr $@3 • body
+
+    '{'  shift e prosecuzione allo stato 7
+
+    body  prosecuzione allo stato 58
+
+
+State 47
+
+   30 node: atom ':' • atom
+   31     | atom ':' • atom ':' atom
+
+    T_atom   shift e prosecuzione allo stato 16
+    T_qatom  shift e prosecuzione allo stato 17
+
+    atom   prosecuzione allo stato 59
+    qatom  prosecuzione allo stato 32
+
+
+State 48
+
+   45 attrassignment: atom '=' • atom
+
+    T_atom   shift e prosecuzione allo stato 16
+    T_qatom  shift e prosecuzione allo stato 17
+
+    atom   prosecuzione allo stato 60
+    qatom  prosecuzione allo stato 32
+
+
+State 49
+
+   58 qatom: qatom '+' • T_qatom
+
+    T_qatom  shift e prosecuzione allo stato 61
+
+
+State 50
+
+   25 rcompound: T_edgeop $@1 • simple $@2 rcompound
+
+    T_subgraph  shift e prosecuzione allo stato 15
+    T_atom      shift e prosecuzione allo stato 16
+    T_qatom     shift e prosecuzione allo stato 17
+
+    $default  riduzione con la regola 51 (optsubghdr)
+
+    simple      prosecuzione allo stato 62
+    nodelist    prosecuzione allo stato 23
+    node        prosecuzione allo stato 24
+    subgraph    prosecuzione allo stato 29
+    optsubghdr  prosecuzione allo stato 30
+    atom        prosecuzione allo stato 54
+    qatom       prosecuzione allo stato 32
+
+
+State 51
+
+   20 compound: simple rcompound optattr •
+   41 attrlist: optattr • '[' optattrdefs ']'
+
+    '['  shift e prosecuzione allo stato 63
+
+    $default  riduzione con la regola 20 (compound)
+
+
+State 52
+
+   39 optattr: attrlist •
+
+    $default  riduzione con la regola 39 (optattr)
+
+
+State 53
+
+   28 nodelist: nodelist ',' node •
+
+    $default  riduzione con la regola 28 (nodelist)
+
+
+State 54
+
+   29 node: atom •
+   30     | atom • ':' atom
+   31     | atom • ':' atom ':' atom
+
+    ':'  shift e prosecuzione allo stato 47
+
+    $default  riduzione con la regola 29 (node)
+
+
+State 55
+
+   41 attrlist: optattr • '[' optattrdefs ']'
+
+    '['  shift e prosecuzione allo stato 63
+
+
+State 56
+
+   32 attrstmt: attrtype optmacroname attrlist •
+   39 optattr: attrlist •
+
+    '['       riduzione con la regola 39 (optattr)
+    $default  riduzione con la regola 32 (attrstmt)
+
+
+State 57
+
+   37 optmacroname: atom '=' •
+
+    $default  riduzione con la regola 37 (optmacroname)
+
+
+State 58
+
+   48 subgraph: optsubghdr $@3 body •
+
+    $default  riduzione con la regola 48 (subgraph)
+
+
+State 59
+
+   30 node: atom ':' atom •
+   31     | atom ':' atom • ':' atom
+
+    ':'  shift e prosecuzione allo stato 64
+
+    $default  riduzione con la regola 30 (node)
+
+
+State 60
+
+   45 attrassignment: atom '=' atom •
+
+    $default  riduzione con la regola 45 (attrassignment)
+
+
+State 61
+
+   58 qatom: qatom '+' T_qatom •
+
+    $default  riduzione con la regola 58 (qatom)
+
+
+State 62
+
+   25 rcompound: T_edgeop $@1 simple • $@2 rcompound
+
+    $default  riduzione con la regola 24 ($@2)
+
+    $@2  prosecuzione allo stato 65
+
+
+State 63
+
+   41 attrlist: optattr '[' • optattrdefs ']'
+
+    $default  riduzione con la regola 43 (optattrdefs)
+
+    optattrdefs  prosecuzione allo stato 66
+
+
+State 64
+
+   31 node: atom ':' atom ':' • atom
+
+    T_atom   shift e prosecuzione allo stato 16
+    T_qatom  shift e prosecuzione allo stato 17
+
+    atom   prosecuzione allo stato 67
+    qatom  prosecuzione allo stato 32
+
+
+State 65
+
+   25 rcompound: T_edgeop $@1 simple $@2 • rcompound
+
+    T_edgeop  shift e prosecuzione allo stato 40
+
+    $default  riduzione con la regola 26 (rcompound)
+
+    rcompound  prosecuzione allo stato 68
+
+
+State 66
+
+   41 attrlist: optattr '[' optattrdefs • ']'
+   42 optattrdefs: optattrdefs • attrdefs
+
+    T_atom   shift e prosecuzione allo stato 16
+    T_qatom  shift e prosecuzione allo stato 17
+    ']'      shift e prosecuzione allo stato 69
+
+    attrdefs        prosecuzione allo stato 70
+    attrassignment  prosecuzione allo stato 71
+    atom            prosecuzione allo stato 72
+    qatom           prosecuzione allo stato 32
+
+
+State 67
+
+   31 node: atom ':' atom ':' atom •
+
+    $default  riduzione con la regola 31 (node)
+
+
+State 68
+
+   25 rcompound: T_edgeop $@1 simple $@2 rcompound •
+
+    $default  riduzione con la regola 25 (rcompound)
+
+
+State 69
+
+   41 attrlist: optattr '[' optattrdefs ']' •
+
+    $default  riduzione con la regola 41 (attrlist)
+
+
+State 70
+
+   42 optattrdefs: optattrdefs attrdefs •
+
+    $default  riduzione con la regola 42 (optattrdefs)
+
+
+State 71
+
+   44 attrdefs: attrassignment • optseparator
+
+    ';'  shift e prosecuzione allo stato 73
+    ','  shift e prosecuzione allo stato 74
+
+    $default  riduzione con la regola 54 (optseparator)
+
+    optseparator  prosecuzione allo stato 75
+
+
+State 72
+
+   45 attrassignment: atom • '=' atom
+
+    '='  shift e prosecuzione allo stato 48
+
+
+State 73
+
+   52 optseparator: ';' •
+
+    $default  riduzione con la regola 52 (optseparator)
+
+
+State 74
+
+   53 optseparator: ',' •
+
+    $default  riduzione con la regola 53 (optseparator)
+
+
+State 75
+
+   44 attrdefs: attrassignment optseparator •
+
+    $default  riduzione con la regola 44 (attrdefs)
