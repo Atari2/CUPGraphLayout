@@ -14,7 +14,7 @@ all: cupgraphlayout
 clean:
 	rm -rf $(BUILDDIR)
 
-cupgraphlayout: deps
+cupgraphlayout: builddeps
 	$(CXX) $(OPTS) $(SRCDIR)/main.cpp -o $(BUILDDIR)/CUPGraphLayout
 
 builddeps: confdeps
