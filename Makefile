@@ -8,23 +8,35 @@ GRAPHVIZ_INCLUDE_DIR := $(BUILDDIR)/include
 GRAPHVIZ_LIB_DIR := $(BUILDDIR)/lib
 JSON_INCLUDE_DIR := $(SRCDIR)/third_party/json
 OPTS := -std=c++20 -I$(GRAPHVIZ_INCLUDE_DIR) -I$(JSON_INCLUDE_DIR) -L$(GRAPHVIZ_LIB_DIR) -lgvc -lcgraph
+GRAPHLIB := $(GRAPHVIZ_LIB_DIR)/libcgraph.so
+CONFDEPS := $(GRAPHVIZ_COPY_DIR)/Makefile
+MAINEXE := $(BUILDDIR)/CUPGraphLayout
+SOURCES := $(wildcard $(SRCDIR)/*.cpp)
 
-all: cupgraphlayout
+all: $(MAINEXE)
+
+deps: $(GRAPHLIB)
 
 clean:
 	rm -rf $(BUILDDIR)
 
-cupgraphlayout: builddeps
-	$(CXX) $(OPTS) $(SRCDIR)/main.cpp -o $(BUILDDIR)/CUPGraphLayout
+cleandeps: 
+	cd $(GRAPHVIZ_COPY_DIR) && $(MAKE) clean
 
-builddeps: confdeps
+distcleandeps:
+	cd $(GRAPHVIZ_COPY_DIR) && $(MAKE) distclean
+
+$(MAINEXE): $(GRAPHLIB) $(SOURCES)
+	$(CXX) $(OPTS) $(SOURCES) -o $(MAINEXE)
+
+$(GRAPHLIB): $(CONFDEPS)
 	cd $(GRAPHVIZ_COPY_DIR) && $(MAKE) -j$(shell nproc) && $(MAKE) install
 
-confdeps: copydeps
+$(CONFDEPS): | $(GRAPHVIZ_COPY_DIR)
 	cd $(GRAPHVIZ_COPY_DIR) && ./configure --prefix=$(BUILDDIR)
 
-copydeps: | builddir
+$(GRAPHVIZ_COPY_DIR): | $(BUILDDIR)
 	cp -r $(GRAPHVIZ_DIR) $(BUILDDIR)
 
-builddir:
+$(BUILDDIR):
 	mkdir -p $(BUILDDIR)
