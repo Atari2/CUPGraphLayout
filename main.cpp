@@ -68,14 +68,17 @@ int main(int argc, char **argv) {
   std::string fillcolor = "fillcolor";
   std::string style = "style";
   std::string graphName = "";
+  std::string pink = "pink";
+  std::string filled = "filled";
+  std::string empty = "";
 
   Agraph_t *g = agopen(graphName.data(), Agundirected, 0);
   for (auto &node : jg.nodes) {
     if (!node.is_terminal)
         continue;
     auto* n = agnode(g, node.name.data(), 1);
-    agsafeset(n, fillcolor.data(), "pink", "");
-    agsafeset(n, style.data(), "filled", "");
+    agsafeset(n, fillcolor.data(), pink.data(), empty.data());
+    agsafeset(n, style.data(), filled.data(), empty.data());
   }
   for (auto &edge : jg.edges) {
     auto* source = agfindnode(g, edge.source.data());
@@ -89,8 +92,8 @@ int main(int argc, char **argv) {
     agedge(g, source, target, 0, 1);
     std::string trimmed_src = trim_numbers(agnameof(source));
     std::string trimmed_trg = trim_numbers(agnameof(target));
-    agsafeset(source, label.data(), trimmed_src.data(), "");
-    agsafeset(target, label.data(), trimmed_trg.data(), "");
+    agsafeset(source, label.data(), trimmed_src.data(), empty.data());
+    agsafeset(target, label.data(), trimmed_trg.data(), empty.data());
   }
 
   // Set an attribute - in this case one that affects the visible rendering

@@ -1,42 +1,45 @@
 SRCDIR := $(abspath $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST))))))
 BUILDDIR := $(SRCDIR)/build
+DEPSCHECK := $(BUILDDIR)/depscheck
 
-GRAPHVIZ_DIR := $(SRCDIR)/third_party/graphviz-8.0.3
-GRAPHVIZ_COPY_DIR := $(BUILDDIR)/graphviz-8.0.3
-
-GRAPHVIZ_INCLUDE_DIR := $(BUILDDIR)/include
-GRAPHVIZ_LIB_DIR := $(BUILDDIR)/lib
 JSON_INCLUDE_DIR := $(SRCDIR)/third_party/json
-OPTS := -std=c++20 -I$(GRAPHVIZ_INCLUDE_DIR) -I$(JSON_INCLUDE_DIR) -L$(GRAPHVIZ_LIB_DIR) -lgvc -lcgraph
-GRAPHLIB := $(GRAPHVIZ_LIB_DIR)/libcgraph.so
-CONFDEPS := $(GRAPHVIZ_COPY_DIR)/Makefile
-MAINEXE := $(BUILDDIR)/CUPGraphLayout
+CXXFLAGS ?= 
+CXXFLAGS += -std=c++20 -I$(JSON_INCLUDE_DIR)
+
+GRAPHVIZ_CXX_FLAGS ?= $(shell pkg-config libgvc --cflags)
+GRAPHVIZ_LD_FLAGS ?= $(shell pkg-config libgvc --libs)
+
+CXXFLAGS += $(GRAPHVIZ_CXX_FLAGS)
+LDFLAGS += $(GRAPHVIZ_LD_FLAGS)
+TARGET = $(BUILDDIR)/CUPGraphLayout
+OBJ = $(BUILDDIR)/CUPGraphLayout.o
 SOURCES := $(wildcard $(SRCDIR)/*.cpp)
 
-all: $(MAINEXE)
-
-deps: $(GRAPHLIB)
+all: $(TARGET)
 
 clean:
 	rm -rf $(BUILDDIR)
 
-cleandeps: 
-	cd $(GRAPHVIZ_COPY_DIR) && $(MAKE) clean
+$(TARGET): $(OBJ)
+	$(CXX) -o $(TARGET) $(OBJ) $(LDFLAGS)
 
-distcleandeps:
-	cd $(GRAPHVIZ_COPY_DIR) && $(MAKE) distclean
+$(OBJ): $(SOURCES) $(DEPSCHECK)
+	$(CXX) $(CXXFLAGS) -c $(SOURCES) -o $(OBJ)
 
-$(MAINEXE): $(GRAPHLIB) $(SOURCES)
-	$(CXX) $(OPTS) $(SOURCES) -o $(MAINEXE)
-
-$(GRAPHLIB): $(CONFDEPS)
-	cd $(GRAPHVIZ_COPY_DIR) && $(MAKE) -j$(shell nproc) && $(MAKE) install
-
-$(CONFDEPS): | $(GRAPHVIZ_COPY_DIR)
-	cd $(GRAPHVIZ_COPY_DIR) && ./configure --prefix=$(BUILDDIR)
-
-$(GRAPHVIZ_COPY_DIR): | $(BUILDDIR)
-	cp -r $(GRAPHVIZ_DIR) $(BUILDDIR)
+$(DEPSCHECK): | $(BUILDDIR)
+ifeq ($(GRAPHVIZ_CXX_FLAGS),)
+		$(warning pkg-config can't find graphviz libraries, or pkg-config itself can't be found)
+		$(warning please install pkg-config and the requires libraries)
+		$(warning on Ubuntu and derivatives, the package is named `graphviz-dev`)
+		$(error Terminating makefile build)
+endif
+ifeq ($(GRAPHVIZ_LD_FLAGS),)
+		$(warning pkg-config can't find graphviz libraries, or pkg-config itself can't be found)
+		$(warning please install pkg-config and the requires libraries)
+		$(warning on Ubuntu and derivatives, the package is named `graphviz-dev`)
+		$(error Terminating makefile build)
+endif
+	touch $(DEPSCHECK)
 
 $(BUILDDIR):
 	mkdir -p $(BUILDDIR)
